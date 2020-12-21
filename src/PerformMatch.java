@@ -10,11 +10,11 @@ public class PerformMatch {
     private static final int WINDOW_SIZE = 4096;
 
     public static void main(String[] args) {
-        HashMap<Integer, List<Match>> database = buildDatabase("prints/");
+        HashMap<String, List<Match>> database = buildDatabase("prints/");
         performMatch(database);
     }
 
-    private static void performMatch(HashMap<Integer, List<Match>> db) {
+    private static void performMatch(HashMap<String, List<Match>> db) {
         HashMap<String, Integer> songHits = new HashMap<>();
 
         int totalHits = 0;
@@ -53,12 +53,22 @@ public class PerformMatch {
 
             // build songHits list
             if (keyFreqList.size() > currentIndex) {
-                int[] firstRow = keyFreqList.get(currentIndex);
+                int[] fingerPrint = keyFreqList.get(currentIndex);
+                String key = Arrays.toString(fingerPrint);
 
-                // TODO: get hits from db
-                // TODO: load hits into songHits
-                // TODO: display results so far
+                if (db.containsKey(key)) {
+                    List<Match> list = db.get(key);
 
+                    for (Match m : list) {
+                        if (songHits.containsKey(m.getFileName())) {
+                            int total = songHits.get(m.getFileName());
+                            songHits.put(m.getFileName(), total + 1);
+                        } else {
+                            songHits.put(m.getFileName(), 1);
+                        }
+                    }
+                }
+                
                 currentIndex++;
             }
         }
@@ -90,16 +100,37 @@ public class PerformMatch {
         }
     }
 
-    private static HashMap<Integer, List<Match>> buildDatabase(String dataDir) {
-        HashMap<Integer, List<Match>> db = new HashMap<>();
+    private static HashMap<String, List<Match>> buildDatabase(String dataDir) {
+        HashMap<String, List<Match>> db = new HashMap<>();
 
         // TODO: loop over .csv files in dataDir and use FingerprintLib to read fingerprints
         // TODO: load db with all fingerprints
+        File printFolder = new File(dataDir);
+        File[] files = printFolder.listFiles();
+        for (File f : files) {
+            List<int[]> fingerPrint = loadFingerprintsFrom(f);
+
+            for (int i = 0; i < fingerPrint.size(); i++) {
+                int[] fp = fingerPrint.get(i);
+                String key = Arrays.toString(fp);
+
+                Match m = new Match(f.getName(), i*10*10);
+
+                if (db.containsKey(key)) {
+                    List<Match> matches = db.get(key);
+                    matches.add(m);
+                } else {
+                    List<Match> list = new ArrayList<>();
+
+                }
+
+            }
+        }
 
         return db;
     }
 
-    private static void loadDbWithPrints(HashMap<Integer, List<Match>> db, List<int[]> keyFreqList, String songName) {
+    private static void loadDbWithPrints(HashMap<String, List<Match>> db, List<int[]> keyFreqList, String songName) {
         // TODO: helper method to load db with fingerprints
     }
 
@@ -124,8 +155,14 @@ public class PerformMatch {
 
     private static int[] getDataRow(String line) {
         // TODO: parse comma separated line into int[]
+        String[] data = line.split(",");
+        int[] out = new int[data.length];
 
-        return null;
+        for (int i = 0; i < data.length; i++) {
+            String val = data[i];
+            out[i] = Integer.parseInt(val.trim());
+        }
+        return out;
     }
 
 }

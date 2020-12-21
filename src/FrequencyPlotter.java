@@ -11,7 +11,7 @@ public class FrequencyPlotter extends PApplet {
     Plot plt;
 
     // ---- AUDIO VARIABLES ----
-    final int WINDOW_SIZE = 4096;
+    final int WINDOW_SIZE = 44100;
     final boolean mic = false;
     ByteArrayOutputStream out;
     AudioReader reader;

@@ -29,6 +29,7 @@ public class WavePlotter extends PApplet {
 
         byte[] raw = out.toByteArray();
         out.reset();
+
         for (int i = 0; i < raw.length; i++) {
             plt.plot(0, time, raw[i]).strokeColor("blue").style("-");
             time++;

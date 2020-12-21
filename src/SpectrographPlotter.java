@@ -1,6 +1,7 @@
 import model.Complex;
 import model.FFT;
 import model.AudioReader;
+import model.FingerprintLib;
 import processing.core.PApplet;
 
 import java.io.ByteArrayOutputStream;
@@ -13,11 +14,11 @@ public class SpectrographPlotter extends PApplet {
     int currentCol = 0;
 
     // ---- AUDIO VARIABLES ----
-    private static final int WINDOW_SIZE = 4096;
+    private static final int WINDOW_SIZE = 44100;
     ByteArrayOutputStream out;
     AudioReader reader;
     ArrayList<Complex[]> fftFrames = new ArrayList<>();
-    boolean mic = false;
+    boolean mic = true;
 
     public void settings() {
         size(800, 800);
@@ -49,6 +50,8 @@ public class SpectrographPlotter extends PApplet {
             displayFrameAtCol(frame, currentCol, 1);
             currentCol += blockSizeX;
 
+            int[] fingerprint = FingerprintLib.getKeyFrequenciesFor(frame);
+
             if (currentCol > this.width) {                     // screen wrap display
                 currentCol = 0;
                 background(255);
@@ -74,6 +77,15 @@ public class SpectrographPlotter extends PApplet {
             fill(fillColor);
             stroke(fillColor);
             rect(currentCol, yval, blockSizeX, blockSizeY);
+        }
+
+        int[] fingerprint = FingerprintLib.getKeyFrequenciesFor(frame);
+        for (int i = 0; i < fingerprint.length; i++) {
+            int freq = fingerprint[i];
+            float yval = map(freq, 0, maxFreq, 800, 0);
+            fill(color(255, 0, 0));
+            stroke(color(255, 0, 0));
+            ellipse(currentCol, yval, 3, 3);
         }
     }
 
