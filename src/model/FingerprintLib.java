@@ -122,9 +122,10 @@ public class FingerprintLib {
     }
 
     public static int[] getKeyFrequenciesFor(Complex[] results) {
-        // TODO: convert frequency list into fingerprint with key frequencies at that time
-        int[] ranges = {44, 120, 180, 300};
+        int[] ranges = {44, 120, 180, 300, 720, 900};
         int[] keyFrequencies = new int[ranges.length - 1];
+
+
         for (int i = 0; i < ranges.length - 1; i++) {
             int lowIndex = ranges[i];
             int highIndex = ranges[i+1];
@@ -137,11 +138,12 @@ public class FingerprintLib {
 
 
     private static int getLoudestIndexBetween(int lowIndex, int highIndex, Complex[] results) {
-        int max = (int) results[lowIndex].abs();
+        double max = results[lowIndex].abs();
         int maxIndex = lowIndex;
+
         for (int i = lowIndex; i < highIndex; i++) {
             if (results[i].abs() > max) {
-                max = (int) results[i].abs();
+                max = results[i].abs();
                 maxIndex = i;
             }
         }

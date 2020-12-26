@@ -13,7 +13,7 @@ public class FileTest {
             String name = f.getName();
 
             if (name.endsWith(".wav")) {
-                System.out.println("============== PROCESSING " + name + " ========================");
+                System.out.println("============== PROCESSING " + name + "========================");
                 FingerprintLib.saveSongFingerPrint("music/" + name, "prints");
             } else {
                 System.out.println("Skipping file " + name);
@@ -21,6 +21,8 @@ public class FileTest {
 
             System.out.println(name);
         }
+
+
 
     }
 }

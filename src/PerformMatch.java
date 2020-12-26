@@ -67,6 +67,8 @@ public class PerformMatch {
                             songHits.put(m.getFileName(), 1);
                         }
                     }
+
+                    printResultsSoFar(songHits);
                 }
                 
                 currentIndex++;
@@ -121,6 +123,8 @@ public class PerformMatch {
                     matches.add(m);
                 } else {
                     List<Match> list = new ArrayList<>();
+                    list.add(m);
+                    db.put(key, list);
 
                 }
 
@@ -154,7 +158,6 @@ public class PerformMatch {
     }
 
     private static int[] getDataRow(String line) {
-        // TODO: parse comma separated line into int[]
         String[] data = line.split(",");
         int[] out = new int[data.length];
 

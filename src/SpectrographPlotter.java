@@ -6,6 +6,7 @@ import processing.core.PApplet;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class SpectrographPlotter extends PApplet {
     // ---- DISPLAY VARIABLES ----
@@ -48,9 +49,11 @@ public class SpectrographPlotter extends PApplet {
         if (fftFrames.size() > 0) {                            // if undisplayed frames left
             Complex[] frame = fftFrames.remove(0);       // remove oldest frame and display
             displayFrameAtCol(frame, currentCol, 1);
-            currentCol += blockSizeX;
 
             int[] fingerprint = FingerprintLib.getKeyFrequenciesFor(frame);
+            System.out.println(Arrays.toString(fingerprint));
+
+            currentCol += blockSizeX;
 
             if (currentCol > this.width) {                     // screen wrap display
                 currentCol = 0;
@@ -66,7 +69,7 @@ public class SpectrographPlotter extends PApplet {
      */
     private void displayFrameAtCol(Complex[] frame, int currentCol, double maxPercentFreqForDisplay) {
         // upper half of frame[] is reflection of lower half.  So don't include it in calculation.
-        int maxFreq = (int)((frame.length/2)*maxPercentFreqForDisplay);
+        int maxFreq = (int) ((frame.length/2)*maxPercentFreqForDisplay);
 
         // frame[0] contains average signal strength; not a freq... so start at 1
         for (int freq = 1; freq < maxFreq; freq++) {
@@ -80,6 +83,7 @@ public class SpectrographPlotter extends PApplet {
         }
 
         int[] fingerprint = FingerprintLib.getKeyFrequenciesFor(frame);
+
         for (int i = 0; i < fingerprint.length; i++) {
             int freq = fingerprint[i];
             float yval = map(freq, 0, maxFreq, 800, 0);
