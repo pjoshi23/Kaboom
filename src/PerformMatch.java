@@ -42,13 +42,25 @@ public class PerformMatch {
             }
 
             // Process results from fftFrames list
-            if (fftFrames.size() > 0) {
+            // Need there to be at least 10 tenths of a second (1 second) of audio available
+            if (fftFrames.size() >= 10) {
                 Complex[] results = fftFrames.remove(0);
+                Complex[] results1 = fftFrames.get(8);
 
                 int[] keyFreq = FingerprintLib.getKeyFrequenciesFor(results);
+                int[] keyFreq1 = FingerprintLib.getKeyFrequenciesFor(results1);
                 System.out.println(currentIndex + " : " + Arrays.toString(keyFreq));
 
-                keyFreqList.add(keyFreq);
+                int[] newArray = new int[keyFreq.length + keyFreq1.length];
+                for (int i = 0; i < keyFreq.length; i++) {
+                    newArray[i] = keyFreq[i];
+                }
+
+                for (int i = 0; i < keyFreq1.length; i++) {
+                    newArray[i + keyFreq.length] = keyFreq1[i];
+                }
+
+                keyFreqList.add(newArray);
             }
 
             // build songHits list
@@ -70,7 +82,7 @@ public class PerformMatch {
 
                     printResultsSoFar(songHits);
                 }
-                
+
                 currentIndex++;
             }
         }

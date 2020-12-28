@@ -1,5 +1,8 @@
 package model;
 
+import com.sun.deploy.util.ArrayUtil;
+import com.sun.tools.javac.util.ArrayUtils;
+
 import java.io.*;
 import java.util.ArrayList;
 
@@ -33,11 +36,25 @@ public class FingerprintLib {
         AudioReader reader = AudioReader.getAudioStreamFor(filePath);
         byte[] b = reader.readAllData();
         Complex[][] fftFrames = FFT.performFFT(b, WINDOW_SIZE);
+        System.out.println(fftFrames.length);
 
         ArrayList<int[]> allKeyFrequencies = new ArrayList<>();
-        for (Complex[] frame : fftFrames) {
-            int[] keyPoints = getKeyFrequenciesFor(frame);
-            allKeyFrequencies.add(keyPoints);
+
+        for (int i = 0; i < fftFrames.length - 10; i++) {
+            int[] keyPoints = getKeyFrequenciesFor(fftFrames[i]);
+            int[] keyPoints2 = getKeyFrequenciesFor(fftFrames[i+10]);
+            int[] newArray = new int[keyPoints.length + keyPoints2.length];
+
+            for (int j = 0; j < keyPoints.length; j++) {
+                newArray[j] = keyPoints[j];
+            }
+
+            for (int j = 0; j < keyPoints2.length; j++) {
+                newArray[j+keyPoints2.length] = keyPoints2[j];
+            }
+
+            allKeyFrequencies.add(newArray);
+
         }
 
         outputDir = slashify(outputDir);
@@ -121,8 +138,10 @@ public class FingerprintLib {
         }
     }
 
+
+
     public static int[] getKeyFrequenciesFor(Complex[] results) {
-        int[] ranges = {44, 120, 180, 300, 720, 900};
+        int[] ranges = {44, 120, 180};
         int[] keyFrequencies = new int[ranges.length - 1];
 
 
