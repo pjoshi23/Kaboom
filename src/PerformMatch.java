@@ -44,23 +44,19 @@ public class PerformMatch {
             // Process results from fftFrames list
             // Need there to be at least 10 tenths of a second (1 second) of audio available
             if (fftFrames.size() >= 10) {
-                Complex[] results = fftFrames.remove(0);
-                Complex[] results1 = fftFrames.get(8);
+                Complex[] firstSample = fftFrames.remove(0);
+                Complex[] nextSample = fftFrames.get(8);
 
-                int[] keyFreq = FingerprintLib.getKeyFrequenciesFor(results);
-                int[] keyFreq1 = FingerprintLib.getKeyFrequenciesFor(results1);
-                System.out.println(currentIndex + " : " + Arrays.toString(keyFreq));
+                int[] keyFreq = FingerprintLib.getKeyFrequenciesFor(firstSample);
+                int[] keyFreq1 = FingerprintLib.getKeyFrequenciesFor(nextSample);
 
-                int[] newArray = new int[keyFreq.length + keyFreq1.length];
+                int[] mergedFingerprint = new int[keyFreq.length + 1];
                 for (int i = 0; i < keyFreq.length; i++) {
-                    newArray[i] = keyFreq[i];
+                    mergedFingerprint[i] = keyFreq[i];
                 }
 
-                for (int i = 0; i < keyFreq1.length; i++) {
-                    newArray[i + keyFreq.length] = keyFreq1[i];
-                }
-
-                keyFreqList.add(newArray);
+                mergedFingerprint[2] = keyFreq1[0];
+                keyFreqList.add(mergedFingerprint);
             }
 
             // build songHits list

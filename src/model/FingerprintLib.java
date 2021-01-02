@@ -42,19 +42,15 @@ public class FingerprintLib {
 
         for (int i = 0; i < fftFrames.length - 10; i++) {
             int[] keyPoints = getKeyFrequenciesFor(fftFrames[i]);
-            int[] keyPoints2 = getKeyFrequenciesFor(fftFrames[i+10]);
-            int[] newArray = new int[keyPoints.length + keyPoints2.length];
+            int[] nextKeyPoints = getKeyFrequenciesFor(fftFrames[i+10]);
+            int[] mergedKeyPoints = new int[keyPoints.length + 1];
 
             for (int j = 0; j < keyPoints.length; j++) {
-                newArray[j] = keyPoints[j];
+                mergedKeyPoints[j] = keyPoints[j];
             }
 
-            for (int j = 0; j < keyPoints2.length; j++) {
-                newArray[j+keyPoints2.length] = keyPoints2[j];
-            }
-
-            allKeyFrequencies.add(newArray);
-
+            mergedKeyPoints[2] = nextKeyPoints[0];
+            allKeyFrequencies.add(mergedKeyPoints);
         }
 
         outputDir = slashify(outputDir);
